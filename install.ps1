@@ -22,7 +22,7 @@ try {
         Write-Host "  Download from https://nodejs.org/"
         exit 1
     }
-    Write-Host "  Node.js v$nodeVersion -- OK"
+    Write-Host "  Node.js v$nodeVersion - OK"
 } catch {
     Write-Host "ERROR: Node.js not found. Download from https://nodejs.org/" -ForegroundColor Red
     exit 1
@@ -30,7 +30,7 @@ try {
 
 try {
     git --version | Out-Null
-    Write-Host "  git -- OK"
+    Write-Host "  git - OK"
 } catch {
     Write-Host "ERROR: git not found. Download from https://git-scm.com/" -ForegroundColor Red
     exit 1
@@ -40,7 +40,7 @@ try {
 Write-Host ""
 Write-Host "[2/5] Installing n8n-mcp server..." -ForegroundColor Yellow
 npm install -g n8n-mcp
-Write-Host "  n8n-mcp -- OK"
+Write-Host "  n8n-mcp - OK"
 
 # Step 3: Install n8n-skills
 Write-Host ""
@@ -52,7 +52,7 @@ $TempDir = Join-Path $env:TEMP "n8n-skills-$(Get-Random)"
 git clone --depth 1 https://github.com/czlonkowski/n8n-skills.git $TempDir 2>$null
 Copy-Item -Recurse -Force "$TempDir\skills\*" $SkillsDir
 Remove-Item -Recurse -Force $TempDir
-Write-Host "  7 base skills installed -- OK"
+Write-Host "  7 base skills installed - OK"
 
 # Step 4: Install n8n-autopilot
 Write-Host ""
@@ -63,13 +63,13 @@ $LocalSkill = Join-Path $ScriptDir "skills\n8n-autopilot"
 
 if (Test-Path $LocalSkill) {
     Copy-Item -Recurse -Force $LocalSkill "$SkillsDir\n8n-autopilot"
-    Write-Host "  n8n-autopilot installed from local -- OK"
+    Write-Host "  n8n-autopilot installed from local - OK"
 } else {
     $TempDir = Join-Path $env:TEMP "n8n-autopilot-$(Get-Random)"
     git clone --depth 1 $RepoUrl $TempDir 2>$null
     Copy-Item -Recurse -Force "$TempDir\skills\n8n-autopilot" "$SkillsDir\n8n-autopilot"
     Remove-Item -Recurse -Force $TempDir
-    Write-Host "  n8n-autopilot downloaded and installed -- OK"
+    Write-Host "  n8n-autopilot downloaded and installed - OK"
 }
 
 # Step 5: MCP config
@@ -79,7 +79,7 @@ Write-Host "[5/5] Configuring MCP server..." -ForegroundColor Yellow
 if (Test-Path $McpPath) {
     $content = Get-Content $McpPath -Raw
     if ($content -match "n8n-mcp") {
-        Write-Host "  n8n-mcp already configured -- OK"
+        Write-Host "  n8n-mcp already configured - OK"
     } else {
         Write-Host "  .mcp.json exists but n8n-mcp not configured."
         Write-Host "  Add n8n-mcp manually. See README.md for config example."
@@ -110,12 +110,12 @@ if (Test-Path $McpPath) {
 }
 "@
     Set-Content -Path $McpPath -Value $mcpConfig -Encoding UTF8
-    Write-Host "  .mcp.json created -- OK"
+    Write-Host "  .mcp.json created - OK"
 
     # Save env vars for credential auto-assignment
     [System.Environment]::SetEnvironmentVariable("N8N_API_URL", $N8nUrl, "User")
     [System.Environment]::SetEnvironmentVariable("N8N_API_KEY", $N8nKey, "User")
-    Write-Host "  Environment variables set (user scope) -- OK"
+    Write-Host "  Environment variables set (user scope) - OK"
 }
 
 # Done

@@ -1,6 +1,6 @@
 # n8n-autopilot
 
-Autonomous n8n workflow builder for Claude Code. Describe what you need in plain language -- Claude designs, builds, validates, tests, and delivers a working workflow.
+Autonomous n8n workflow builder for Claude Code. Describe what you need in plain language - Claude designs, builds, validates, tests, and delivers a working workflow.
 
 Built on top of [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) and [n8n-skills](https://github.com/czlonkowski/n8n-skills).
 
@@ -12,13 +12,13 @@ You describe a task:
 
 Claude autonomously:
 
-1. **Understands** -- parses your brief into requirements (trigger, processing, output)
-2. **Designs** -- searches 2,653+ templates and 525+ nodes, picks the best architecture
-3. **Builds** -- creates the workflow iteratively, node by node
-4. **Assigns credentials** -- finds matching credentials from your n8n instance automatically
-5. **Validates** -- runs validation loops, auto-fixes errors
-6. **Tests** -- executes the workflow with realistic test data
-7. **Delivers** -- active workflow + report with everything you need to know
+1. **Understands** - parses your brief into requirements (trigger, processing, output)
+2. **Designs** - searches 2,653+ templates and 525+ nodes, picks the best architecture
+3. **Builds** - creates the workflow iteratively, node by node
+4. **Assigns credentials** - finds matching credentials from your n8n instance automatically
+5. **Validates** - runs validation loops, auto-fixes errors
+6. **Tests** - executes the workflow with realistic test data
+7. **Delivers** - active workflow + report with everything you need to know
 
 Zero technical decisions on your part. Works with any n8n integration.
 
@@ -76,7 +76,7 @@ git clone https://github.com/natiixnt/n8n-autopilot.git /tmp/n8n-autopilot
 cp -r /tmp/n8n-autopilot/skills/n8n-autopilot ~/.claude/skills/
 ```
 
-4. Configure MCP -- create `~/.claude/.mcp.json`:
+4. Configure MCP - create `~/.claude/.mcp.json`:
 ```json
 {
   "mcpServers": {
@@ -202,7 +202,7 @@ Slack, Google Sheets, Gmail, OpenAI, Postgres, MySQL, HubSpot, Notion, Airtable,
 n8n-autopilot/
   skills/
     n8n-autopilot/
-      SKILL.md              # Main skill -- 5-phase autonomous pipeline
+      SKILL.md              # Main skill - 5-phase autonomous pipeline
       SOLUTION_DESIGN.md    # Decision trees, scenario->architecture mappings
       EXAMPLES.md           # Real briefs -> solutions (6 examples)
   install.sh                # macOS/Linux installer
@@ -215,9 +215,9 @@ n8n-autopilot/
 
 ## Credits
 
-- [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) -- MCP server by Romuald Czlonkowski
-- [n8n-skills](https://github.com/czlonkowski/n8n-skills) -- Base skills by Romuald Czlonkowski
-- n8n-autopilot -- Autonomous orchestration layer
+- [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) - MCP server by Romuald Czlonkowski
+- [n8n-skills](https://github.com/czlonkowski/n8n-skills) - Base skills by Romuald Czlonkowski
+- n8n-autopilot - Autonomous orchestration layer
 
 ## License
 

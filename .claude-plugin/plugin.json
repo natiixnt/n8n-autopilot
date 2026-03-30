@@ -1,7 +1,7 @@
 {
   "name": "n8n-autopilot",
   "version": "1.0.0",
-  "description": "Autonomous n8n workflow builder. Describe a task -- Claude designs, builds, validates, tests, and delivers a working workflow.",
+  "description": "Autonomous n8n workflow builder. Describe a task - Claude designs, builds, validates, tests, and delivers a working workflow.",
   "author": {
     "name": "natiixnt"
   },

@@ -15,7 +15,7 @@ case "$OS" in
     Darwin) PLATFORM="macOS" ;;
     Linux)  PLATFORM="Linux" ;;
     MINGW*|MSYS*|CYGWIN*)
-        echo "Windows detected -- use install.ps1 instead:"
+        echo "Windows detected - use install.ps1 instead:"
         echo "  irm https://raw.githubusercontent.com/natiixnt/n8n-autopilot/main/install.ps1 | iex"
         exit 1
         ;;
@@ -52,14 +52,14 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-echo "  Node.js $(node -v) -- OK"
-echo "  git -- OK"
+echo "  Node.js $(node -v) - OK"
+echo "  git - OK"
 
 # Step 2: Install n8n-mcp
 echo ""
 echo "[2/5] Installing n8n-mcp server..."
 npm install -g n8n-mcp 2>/dev/null || sudo npm install -g n8n-mcp
-echo "  n8n-mcp -- OK"
+echo "  n8n-mcp - OK"
 
 # Step 3: Install n8n-skills (base skills from czlonkowski)
 echo ""
@@ -70,7 +70,7 @@ TEMP_DIR=$(mktemp -d)
 git clone --depth 1 https://github.com/czlonkowski/n8n-skills.git "$TEMP_DIR" 2>/dev/null
 cp -r "$TEMP_DIR/skills/"* "$SKILLS_DIR/"
 rm -rf "$TEMP_DIR"
-echo "  7 base skills installed -- OK"
+echo "  7 base skills installed - OK"
 
 # Step 4: Install n8n-autopilot
 echo ""
@@ -80,14 +80,14 @@ echo "[4/5] Installing n8n-autopilot skill..."
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 if [ -d "$SCRIPT_DIR/skills/n8n-autopilot" ]; then
     cp -r "$SCRIPT_DIR/skills/n8n-autopilot" "$SKILLS_DIR/"
-    echo "  n8n-autopilot installed from local -- OK"
+    echo "  n8n-autopilot installed from local - OK"
 else
     # Otherwise download from GitHub
     TEMP_DIR=$(mktemp -d)
     git clone --depth 1 "$REPO_URL" "$TEMP_DIR" 2>/dev/null
     cp -r "$TEMP_DIR/skills/n8n-autopilot" "$SKILLS_DIR/"
     rm -rf "$TEMP_DIR"
-    echo "  n8n-autopilot downloaded and installed -- OK"
+    echo "  n8n-autopilot downloaded and installed - OK"
 fi
 
 # Step 5: MCP config
@@ -97,7 +97,7 @@ echo "[5/5] Configuring MCP server..."
 if [ -f "$MCP_PATH" ]; then
     # Check if n8n-mcp already configured
     if grep -q "n8n-mcp" "$MCP_PATH" 2>/dev/null; then
-        echo "  n8n-mcp already configured in $MCP_PATH -- OK"
+        echo "  n8n-mcp already configured in $MCP_PATH - OK"
     else
         echo "  .mcp.json exists but n8n-mcp not configured."
         echo "  Add n8n-mcp manually. See README.md for config example."
@@ -127,7 +127,7 @@ else
   }
 }
 MCPEOF
-    echo "  .mcp.json created -- OK"
+    echo "  .mcp.json created - OK"
 
     # Save env vars for credential auto-assignment
     SHELL_RC=""

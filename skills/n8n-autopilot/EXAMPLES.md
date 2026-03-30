@@ -9,22 +9,22 @@ Real-world examples of vague client briefs and how n8n-autopilot solves them.
 ### Brief (from client):
 > "Chce dostawac powiadomienia jak ktos wypelni formularz na stronie"
 
-### Phase 1 -- Understanding:
+### Phase 1 - Understanding:
 - **Trigger**: Webhook (form submission)
 - **Source**: Form data via HTTP POST
 - **Processing**: Map form fields
-- **Output**: Notification (channel unspecified -- default to Slack + Email)
+- **Output**: Notification (channel unspecified - default to Slack + Email)
 - **Missing**: Which form fields? What notification channel?
-- **Decision**: Don't ask -- build for generic form fields, use both Slack and Email
+- **Decision**: Don't ask - build for generic form fields, use both Slack and Email
 
-### Phase 2 -- Design:
+### Phase 2 - Design:
 ```
 Pattern: Webhook Processing
 Nodes: Webhook -> Set -> Slack + Gmail
 Error: Error Trigger -> Slack (#ops)
 ```
 
-### Phase 3 -- Build:
+### Phase 3 - Build:
 ```javascript
 // Step 1: Create
 n8n_create_workflow({
@@ -79,14 +79,14 @@ n8n_update_partial_workflow({
 // Step 6: Connect all
 ```
 
-### Phase 4 -- Validate:
+### Phase 4 - Validate:
 ```
 n8n_validate_workflow({id: "<id>", options: {profile: "runtime"}})
 -> Fix any errors
 -> Re-validate
 ```
 
-### Phase 5 -- Deliver:
+### Phase 5 - Deliver:
 ```
 Workflow gotowy: Form Submission Notifications
 ID: abc123
@@ -116,14 +116,14 @@ Webhook URL: https://your-n8n.com/webhook/form-submit
 > ktos z zespolu dostal alert i zeby zamowienie bylo automatycznie sprawdzone
 > pod katem fraud"
 
-### Phase 1 -- Understanding:
+### Phase 1 - Understanding:
 - **Trigger**: Webhook (order.created from e-commerce)
 - **Source**: Order data (items, total, customer info)
 - **Processing**: Check amount > 1000, AI fraud analysis
 - **Output**: Alert to team (Slack), fraud flag in system
 - **Inferred**: Need to store results, need error handling for AI
 
-### Phase 2 -- Design:
+### Phase 2 - Design:
 ```
 Pattern: Webhook Processing + AI
 Nodes:
@@ -136,11 +136,11 @@ Nodes:
           -> Medium -> Slack (#orders-review) + Flag for review
           -> Low    -> Continue normal processing
       -> False: -> Continue normal processing
-    -> Google Sheets (order log -- all orders)
+    -> Google Sheets (order log - all orders)
     -> Error Handler -> Slack (#ops)
 ```
 
-### Phase 3 -- Build:
+### Phase 3 - Build:
 Iterative build: 8 nodes, ~6 update operations, validate after each major addition.
 
 ### Delivery:
@@ -167,13 +167,13 @@ Wymagane credentials:
 ### Brief:
 > "Chce cos z AI zeby pomagalo zespolowi"
 
-### Phase 1 -- Understanding:
+### Phase 1 - Understanding:
 - Everything is vague. Need to ask ONE question:
 - **Question**: "Co zespol robi najczesciej reczenie / co zajmuje im najwiecej czasu?"
 
 ### If user says: "Odpowiadanie na emaile od klientow"
 
-### Phase 2 -- Design:
+### Phase 2 - Design:
 ```
 Pattern: AI Agent Workflow
 Solution: AI email assistant that drafts responses
@@ -197,13 +197,13 @@ Email Trigger (IMAP)
 > "Mamy dane w Google Sheets, CRM w HubSpot, komunikacja na Slacku.
 > Chce zeby to wszystko ze soba gadalo"
 
-### Phase 1 -- Understanding:
+### Phase 1 - Understanding:
 - Too vague to build one workflow. Need to clarify USE CASE.
 - **Question**: "Jaki konkretny proces chcesz zautomatyzowac? Np. nowy lead w Sheets -> HubSpot -> Slack?"
 
 ### If user says: "Tak, dokladnie. Jak handlowiec doda lead do Sheets, niech pojawi sie w HubSpot i na Slacku"
 
-### Phase 2 -- Design:
+### Phase 2 - Design:
 ```
 Pattern: Scheduled Task (poll Sheets) + API Integration
 
@@ -225,12 +225,12 @@ Schedule (every 5 min)
 ### Brief:
 > "Potrzebuje raport co tydzien"
 
-### Phase 1 -- Understanding:
+### Phase 1 - Understanding:
 - **Question**: "Raport z czego? Jakie dane i skad?"
 
 ### If user says: "Ze sprzedazy, mamy API do naszego systemu"
 
-### Phase 2 -- Design:
+### Phase 2 - Design:
 ```
 Pattern: Scheduled Tasks
 
@@ -252,14 +252,14 @@ Schedule (Monday 8:00)
 ### Brief:
 > "Monitoring uptime naszych serwisow"
 
-### Phase 1 -- Understanding:
+### Phase 1 - Understanding:
 - Everything is clear enough. No questions needed.
 - **Trigger**: Schedule (every 5 min)
 - **Source**: HTTP requests to service endpoints
 - **Processing**: Check status codes
 - **Output**: Alert on downtime
 
-### Phase 2 -- Design:
+### Phase 2 - Design:
 ```
 Pattern: Scheduled Tasks
 
@@ -290,7 +290,7 @@ When the user is very vague:
 1. Don't ask multiple questions
 2. Ask ONE targeted question: "Co Twoj zespol robi najczesciej recznie?"
 3. From that answer, you can design the whole solution
-4. Build a simple v1 -- user can iterate after seeing it work
+4. Build a simple v1 - user can iterate after seeing it work
 
 **The goal is always: deliver something working, fast.**
 User will tell you what to change after they see it in action.

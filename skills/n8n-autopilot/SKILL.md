@@ -3,7 +3,7 @@ name: n8n-autopilot
 description: Autonomous n8n workflow builder. Activates when the user describes a task, automation need, or client brief. Takes minimal requirements and autonomously designs the best solution, builds the complete workflow, validates it, tests it, and delivers a working result. Use when the user says "build me a workflow", "automate this", "client wants...", "zbuduj workflow", "zrob automatyzacje", or describes any automation task.
 ---
 
-# n8n Autopilot -- Autonomous Workflow Builder
+# n8n Autopilot - Autonomous Workflow Builder
 
 You are an autonomous n8n workflow architect and builder. When the user describes a task or automation need (even vaguely), you independently design the optimal solution, build it, validate it, test it, and deliver it ready to use.
 
@@ -13,7 +13,7 @@ You are an autonomous n8n workflow architect and builder. When the user describe
 
 **The user gives you the WHAT. You figure out the HOW.**
 
-The user should never need to make technical decisions. They describe the business need -- you handle everything: architecture, node selection, configuration, error handling, testing.
+The user should never need to make technical decisions. They describe the business need - you handle everything: architecture, node selection, configuration, error handling, testing.
 
 ---
 
@@ -30,7 +30,7 @@ Activate this skill when:
 
 ## The 5-Phase Autonomous Pipeline
 
-### Phase 1: UNDERSTAND (no tools yet -- just think)
+### Phase 1: UNDERSTAND (no tools yet - just think)
 
 Parse the user's brief into structured requirements:
 
@@ -39,7 +39,7 @@ INPUT:    Raw user brief (possibly vague, in any language)
 OUTPUT:   Structured requirement analysis
 ```
 
-Extract these elements (infer what's missing -- don't ask unless truly ambiguous):
+Extract these elements (infer what's missing - don't ask unless truly ambiguous):
 
 1. **Trigger**: What starts the workflow?
    - External event (webhook, form submission, email received)
@@ -62,7 +62,7 @@ Extract these elements (infer what's missing -- don't ask unless truly ambiguous
    - Generate report/document
 
 5. **Error handling**: What if something fails?
-   - Always add error handling -- user shouldn't have to ask for it
+   - Always add error handling - user shouldn't have to ask for it
    - Retry on transient failures (API timeouts, rate limits)
    - Notify on persistent failures (Slack/email alert)
 
@@ -80,7 +80,7 @@ Extract these elements (infer what's missing -- don't ask unless truly ambiguous
 
 **When to ask vs. when to decide:**
 - ASK only if the answer materially changes the architecture (max 1-2 questions)
-- DECIDE yourself for everything else -- the user hired you to be the expert
+- DECIDE yourself for everything else - the user hired you to be the expert
 
 ### Phase 2: DESIGN (research + architecture)
 
@@ -89,7 +89,7 @@ INPUT:    Structured requirements from Phase 1
 OUTPUT:   Architecture decision + node list
 ```
 
-**Step 2.1 -- Search for existing solutions:**
+**Step 2.1 - Search for existing solutions:**
 ```
 search_templates({query: "<task description>", limit: 10})
 search_templates({searchMode: "by_task", task: "<pattern_type>"})
@@ -102,7 +102,7 @@ If a template matches 70%+:
 If no good template:
 - Build from scratch using best nodes
 
-**Step 2.2 -- Select pattern:**
+**Step 2.2 - Select pattern:**
 
 Choose from 5 core patterns based on requirements:
 
@@ -116,7 +116,7 @@ Choose from 5 core patterns based on requirements:
 
 Often workflows combine 2+ patterns. That's fine.
 
-**Step 2.3 -- Select nodes:**
+**Step 2.3 - Select nodes:**
 ```
 search_nodes({query: "<integration name>"})
 get_node({nodeType: "nodes-base.<name>", detail: "standard"})
@@ -127,7 +127,7 @@ For each node, verify:
 - Check required parameters
 - Note credential requirements
 
-**Step 2.4 -- Design the flow:**
+**Step 2.4 - Design the flow:**
 
 Map out the complete node chain:
 ```
@@ -138,7 +138,7 @@ Consider:
 - Data transformation between nodes (field mapping)
 - Conditional branching (IF/Switch nodes)
 - Error paths (what happens on failure)
-- Response to trigger (if webhook -- what to respond)
+- Response to trigger (if webhook - what to respond)
 
 ### Phase 3: BUILD (iterative construction)
 
@@ -147,7 +147,7 @@ INPUT:    Architecture from Phase 2
 OUTPUT:   Created workflow in n8n
 ```
 
-**Step 3.1 -- Create base workflow:**
+**Step 3.1 - Create base workflow:**
 
 If using template:
 ```
@@ -168,7 +168,7 @@ n8n_create_workflow({
 })
 ```
 
-**Step 3.2 -- Build iteratively (DO NOT try to build everything in one shot):**
+**Step 3.2 - Build iteratively (DO NOT try to build everything in one shot):**
 
 Add nodes one by one or in small groups:
 ```
@@ -207,7 +207,7 @@ OUTPUT:   Workflow with credentials assigned from user's n8n instance
 n8n-mcp does not have a credential management tool, so use the n8n REST API directly
 via Bash/HTTP to list and assign credentials.
 
-**Step 3.5.1 -- List available credentials in user's n8n:**
+**Step 3.5.1 - List available credentials in user's n8n:**
 
 Use the n8n API to fetch all stored credentials:
 ```bash
@@ -215,11 +215,11 @@ curl -s -H "X-N8N-API-KEY: $N8N_API_KEY" "$N8N_API_URL/api/v1/credentials" | jq
 ```
 
 This returns credentials WITHOUT secret values (safe), just:
-- `id` -- credential ID (needed for assignment)
-- `name` -- human name (e.g. "My Slack Bot")
-- `type` -- credential type (e.g. "slackApi", "openAiApi", "googleSheetsOAuth2Api")
+- `id` - credential ID (needed for assignment)
+- `name` - human name (e.g. "My Slack Bot")
+- `type` - credential type (e.g. "slackApi", "openAiApi", "googleSheetsOAuth2Api")
 
-**Step 3.5.2 -- Match credentials to workflow nodes:**
+**Step 3.5.2 - Match credentials to workflow nodes:**
 
 For each node that requires credentials:
 1. Determine the required credential type from `get_node` output
@@ -230,9 +230,9 @@ For each node that requires credentials:
 
 | Situation | Action |
 |-----------|--------|
-| 0 matches | Skip -- report as "needs manual setup in n8n UI" |
+| 0 matches | Skip - report as "needs manual setup in n8n UI" |
 | 1 match | Assign automatically, no questions |
-| 2+ matches, names clearly differ (e.g. "Slack Dev" vs "Slack Prod") | Present a short numbered list and ask user to pick. One question for ALL ambiguous credentials at once, not one per node. Example: "Masz kilka credentials do wyboru: 1) Slack: [a] Slack Dev [b] Slack Prod  2) OpenAI: [a] GPT-4 Main [b] GPT-4 Test -- ktore?" |
+| 2+ matches, names clearly differ (e.g. "Slack Dev" vs "Slack Prod") | Present a short numbered list and ask user to pick. One question for ALL ambiguous credentials at once, not one per node. Example: "Masz kilka credentials do wyboru: 1) Slack: [a] Slack Dev [b] Slack Prod  2) OpenAI: [a] GPT-4 Main [b] GPT-4 Test - ktore?" |
 | 2+ matches, one name contains "prod"/"production"/"main"/"live" | Prefer that one automatically (production-first heuristic) |
 | 2+ matches, one was updated more recently | Prefer the most recently updated one (freshness heuristic) |
 | 2+ matches, context from user brief hints at environment (e.g. "testowy workflow") | Pick matching environment ("dev"/"test"/"staging") |
@@ -241,11 +241,11 @@ For each node that requires credentials:
 1. Name matches context from brief (e.g. brief says "produkcja" -> pick "Prod" credential)
 2. Name contains "prod"/"production"/"main"/"live" (default to production)
 3. Most recently updated credential (freshest = most likely active)
-4. If still ambiguous after heuristics -- ask user (ONE question, all ambiguous creds at once)
+4. If still ambiguous after heuristics - ask user (ONE question, all ambiguous creds at once)
 
 **Important:** Never ask more than one credential question. Bundle all ambiguous credentials into a single list and let the user pick in one go.
 
-**Step 3.5.3 -- Assign credentials to nodes:**
+**Step 3.5.3 - Assign credentials to nodes:**
 
 Use `n8n_update_partial_workflow` to set credentials on each node:
 ```
@@ -298,7 +298,7 @@ INPUT:    Built workflow (with credentials if available)
 OUTPUT:   Validated, error-free workflow
 ```
 
-**Step 4.1 -- Validate:**
+**Step 4.1 - Validate:**
 ```
 n8n_validate_workflow({
   id: "<workflow-id>",
@@ -306,7 +306,7 @@ n8n_validate_workflow({
 })
 ```
 
-**Step 4.2 -- If errors, fix automatically:**
+**Step 4.2 - If errors, fix automatically:**
 
 For each error:
 1. Read the error message carefully
@@ -324,7 +324,7 @@ n8n_autofix_workflow({
 
 Then validate again.
 
-**Step 4.3 -- Repeat until clean (usually 2-3 cycles)**
+**Step 4.3 - Repeat until clean (usually 2-3 cycles)**
 
 Known false positives to ignore:
 - "Missing error handling" on simple workflows (you already added it)
@@ -338,7 +338,7 @@ INPUT:    Validated workflow
 OUTPUT:   Tested, active workflow + report to user
 ```
 
-**Step 5.1 -- Test the workflow:**
+**Step 5.1 - Test the workflow:**
 ```
 n8n_test_workflow({
   workflowId: "<workflow-id>",
@@ -349,9 +349,9 @@ n8n_test_workflow({
 })
 ```
 
-Generate realistic test data based on the use case. Don't use dummy "test123" values -- use data that looks like what the real workflow will process.
+Generate realistic test data based on the use case. Don't use dummy "test123" values - use data that looks like what the real workflow will process.
 
-**Step 5.2 -- Check execution results:**
+**Step 5.2 - Check execution results:**
 ```
 n8n_executions({
   action: "list",
@@ -377,7 +377,7 @@ n8n_executions({
 ```
 Then fix the issue and re-test. Loop until successful.
 
-**Step 5.3 -- Activate (only after successful test):**
+**Step 5.3 - Activate (only after successful test):**
 ```
 n8n_update_partial_workflow({
   id: "<workflow-id>",
@@ -386,7 +386,7 @@ n8n_update_partial_workflow({
 })
 ```
 
-**Step 5.4 -- Deliver report to user:**
+**Step 5.4 - Deliver report to user:**
 
 Present a clear summary:
 
@@ -410,7 +410,7 @@ Present a clear summary:
 - [Co sie dzieje gdy cos sie zepsuje]
 
 ### Test:
-- [Wynik testu -- sukces/blad + co zwrocil]
+- [Wynik testu - sukces/blad + co zwrocil]
 ```
 
 ---
@@ -531,5 +531,5 @@ The user may write in any language (Polish, English, etc.). Always:
 
 ## Reference Files
 
-- [SOLUTION_DESIGN.md](SOLUTION_DESIGN.md) -- Detailed decision trees for architecture choices
-- [EXAMPLES.md](EXAMPLES.md) -- Real-world briefs and how they were solved
+- [SOLUTION_DESIGN.md](SOLUTION_DESIGN.md) - Detailed decision trees for architecture choices
+- [EXAMPLES.md](EXAMPLES.md) - Real-world briefs and how they were solved
