@@ -1,0 +1,20 @@
+{
+  "name": "n8n-autopilot",
+  "version": "1.0.0",
+  "description": "Autonomous n8n workflow builder. Describe a task -- Claude designs, builds, validates, tests, and delivers a working workflow.",
+  "author": {
+    "name": "natiixnt"
+  },
+  "license": "MIT",
+  "keywords": [
+    "n8n",
+    "workflow",
+    "automation",
+    "autopilot",
+    "autonomous",
+    "mcp",
+    "no-code"
+  ],
+  "repository": "https://github.com/natiixnt/n8n-autopilot",
+  "homepage": "https://github.com/natiixnt/n8n-autopilot"
+}
