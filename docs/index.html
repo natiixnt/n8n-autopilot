@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>n8n-autopilot - AI-Powered Workflow Builder for n8n</title>
+  <meta name="description" content="Describe what you need in plain language. Claude Code autonomously designs, builds, validates, tests, and delivers production-ready n8n workflows. Zero manual configuration.">
+  <meta name="keywords" content="n8n, automation, workflow builder, Claude Code, AI automation, no-code, MCP, n8n workflows, n8n AI, workflow automation, n8n plugin">
+  <meta property="og:title" content="n8n-autopilot - AI-Powered Workflow Builder">
+  <meta property="og:description" content="Describe a task in plain language. Get a production-ready n8n workflow. Powered by Claude Code + n8n-mcp.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://natiixnt.github.io/n8n-autopilot/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0b;
+      --bg-card: #111113;
+      --bg-card-hover: #18181b;
+      --border: #27272a;
+      --border-bright: #3f3f46;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --accent: #f97316;
+      --accent-glow: rgba(249, 115, 22, 0.15);
+      --accent2: #8b5cf6;
+      --accent2-glow: rgba(139, 92, 246, 0.15);
+      --green: #22c55e;
+      --green-glow: rgba(34, 197, 94, 0.1);
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Reveal animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* Glow bg effect */
+    .glow-bg {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 20%, var(--accent-glow) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, var(--accent2-glow) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    section { padding: 100px 0; }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 10, 11, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    nav .logo {
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    nav .logo span { color: var(--accent); }
+    nav .nav-links { display: flex; gap: 32px; align-items: center; }
+    nav .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    nav .nav-links a:hover { color: var(--text); }
+
+    .gh-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--text);
+      color: var(--bg);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .gh-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(255,255,255,0.1); }
+    .gh-btn svg { width: 18px; height: 18px; }
+
+    /* Hero */
+    .hero {
+      padding: 160px 0 100px;
+      text-align: center;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      color: var(--accent);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+      letter-spacing: 0.02em;
+    }
+    .hero-badge .pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--accent) 0%, #fb923c 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--accent) 0%, #ea580c 100%);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(249, 115, 22, 0.3);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      border-color: var(--border-bright);
+      background: var(--bg-card-hover);
+    }
+
+    /* Install block */
+    .install-block {
+      margin-top: 48px;
+      display: inline-block;
+    }
+    .install-cmd {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .install-cmd:hover { border-color: var(--accent); }
+    .install-cmd code { color: var(--text); }
+    .install-cmd .prefix { color: var(--accent); }
+    .install-cmd .copy-icon {
+      color: var(--text-dim);
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .install-cmd:hover .copy-icon { color: var(--accent); }
+    .install-cmd .copied {
+      position: absolute;
+      right: 24px;
+      background: var(--green);
+      color: white;
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .install-cmd .copied.show { opacity: 1; }
+
+    /* Stats bar */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 48px 0;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat .number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat .label {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* Section headers */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+    .section-desc.center { margin: 0 auto; text-align: center; }
+    .section-header { text-align: center; margin-bottom: 64px; }
+
+    /* Pipeline */
+    .pipeline { padding: 80px 0; }
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .pipeline-step {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s;
+      position: relative;
+    }
+    .pipeline-step:hover {
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+      transform: translateX(8px);
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+    .step-num.s1 { background: rgba(249,115,22,0.15); color: var(--accent); }
+    .step-num.s2 { background: rgba(139,92,246,0.15); color: var(--accent2); }
+    .step-num.s3 { background: rgba(59,130,246,0.15); color: #3b82f6; }
+    .step-num.s4 { background: rgba(34,197,94,0.15); color: var(--green); }
+    .step-num.s5 { background: rgba(236,72,153,0.15); color: #ec4899; }
+    .step-content h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+    .step-content p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+    .step-tag {
+      display: inline-block;
+      background: rgba(249,115,22,0.1);
+      color: var(--accent);
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* Feature cards */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s;
+    }
+    .feature-card:hover {
+      border-color: var(--border-bright);
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+    }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .feature-icon.orange { background: rgba(249,115,22,0.15); }
+    .feature-icon.purple { background: rgba(139,92,246,0.15); }
+    .feature-icon.blue { background: rgba(59,130,246,0.15); }
+    .feature-icon.green { background: rgba(34,197,94,0.15); }
+    .feature-icon.pink { background: rgba(236,72,153,0.15); }
+    .feature-icon.yellow { background: rgba(234,179,8,0.15); }
+    .feature-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* Demo terminal */
+    .demo { padding: 80px 0; }
+    .terminal {
+      background: #0c0c0e;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .terminal-dot.red { background: #ef4444; }
+    .terminal-dot.yellow { background: #eab308; }
+    .terminal-dot.green { background: #22c55e; }
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .terminal-body {
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+    .terminal-body .prompt { color: var(--accent); }
+    .terminal-body .cmd { color: var(--text); }
+    .terminal-body .comment { color: var(--text-dim); }
+    .terminal-body .output { color: var(--green); }
+    .terminal-body .info { color: var(--accent2); }
+    .terminal-body .line {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: typeLine 0.4s forwards;
+    }
+    .terminal.visible .line:nth-child(1) { animation-delay: 0.1s; }
+    .terminal.visible .line:nth-child(2) { animation-delay: 0.6s; }
+    .terminal.visible .line:nth-child(3) { animation-delay: 1.2s; }
+    .terminal.visible .line:nth-child(4) { animation-delay: 1.6s; }
+    .terminal.visible .line:nth-child(5) { animation-delay: 2.0s; }
+    .terminal.visible .line:nth-child(6) { animation-delay: 2.4s; }
+    .terminal.visible .line:nth-child(7) { animation-delay: 2.8s; }
+    .terminal.visible .line:nth-child(8) { animation-delay: 3.2s; }
+    .terminal.visible .line:nth-child(9) { animation-delay: 3.6s; }
+    .terminal.visible .line:nth-child(10) { animation-delay: 4.0s; }
+    .terminal.visible .line:nth-child(11) { animation-delay: 4.4s; }
+    .terminal.visible .line:nth-child(12) { animation-delay: 4.8s; }
+    .terminal.visible .line:nth-child(13) { animation-delay: 5.2s; }
+    @keyframes typeLine {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Integrations */
+    .integrations-scroll {
+      display: flex;
+      gap: 16px;
+      overflow: hidden;
+      padding: 20px 0;
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+    .integrations-track {
+      display: flex;
+      gap: 16px;
+      animation: scroll 30s linear infinite;
+    }
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .int-badge {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 10px 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Install section */
+    .install-section { padding: 80px 0; }
+    .install-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      width: fit-content;
+      margin: 0 auto 32px;
+    }
+    .install-tab {
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      background: none;
+    }
+    .install-tab.active {
+      background: var(--accent);
+      color: white;
+    }
+    .install-tab:hover:not(.active) { color: var(--text); }
+    .install-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .install-panel {
+      display: none;
+    }
+    .install-panel.active { display: block; }
+    .code-block {
+      background: #0c0c0e;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      overflow-x: auto;
+      position: relative;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .code-block .comment { color: var(--text-dim); }
+    .code-block .string { color: var(--green); }
+
+    /* CTA */
+    .cta {
+      text-align: center;
+      padding: 120px 0;
+    }
+    .cta-card {
+      background: linear-gradient(135deg, rgba(249,115,22,0.08) 0%, rgba(139,92,246,0.08) 100%);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 24px;
+      padding: 80px 40px;
+    }
+    .cta h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .cta p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    footer .credits { color: var(--text-dim); font-size: 0.85rem; }
+    footer .credits a { color: var(--text-muted); text-decoration: none; }
+    footer .credits a:hover { color: var(--text); }
+    footer .footer-links { display: flex; gap: 24px; }
+    footer .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; }
+    footer .footer-links a:hover { color: var(--text); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      section { padding: 60px 0; }
+      .hero { padding: 120px 0 60px; }
+      .stats { gap: 24px; }
+      .stat .number { font-size: 2rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      nav .nav-links { display: none; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .install-cmd { font-size: 0.75rem; }
+      .pipeline-step { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-bg"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">n8n-<span>autopilot</span></a>
+    <div class="nav-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="#demo">Demo</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/natiixnt/n8n-autopilot" class="gh-btn">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Star on GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="reveal">
+      <div class="hero-badge">
+        <div class="pulse"></div>
+        Open Source - MIT Licensed
+      </div>
+    </div>
+    <h1 class="reveal reveal-delay-1">
+      Describe a task.<br><span class="accent">Get a workflow.</span>
+    </h1>
+    <p class="subtitle reveal reveal-delay-2">
+      AI-powered autonomous builder for n8n. Claude Code designs, builds, validates, tests, and delivers production-ready workflows from a plain-language brief.
+    </p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="#install" class="btn-primary">Get Started</a>
+      <a href="#demo" class="btn-secondary">See It In Action</a>
+    </div>
+    <div class="install-block reveal reveal-delay-4">
+      <div class="install-cmd" onclick="copyInstall(this)">
+        <span class="prefix">$</span>
+        <code>curl -fsSL https://raw.githubusercontent.com/natiixnt/n8n-autopilot/main/install.sh | bash</code>
+        <span class="copy-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </span>
+        <span class="copied">Copied!</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="container">
+  <div class="stats reveal">
+    <div class="stat">
+      <div class="number">525+</div>
+      <div class="label">Integrations</div>
+    </div>
+    <div class="stat">
+      <div class="number">2,653+</div>
+      <div class="label">Workflow Templates</div>
+    </div>
+    <div class="stat">
+      <div class="number">5</div>
+      <div class="label">Phases, Fully Autonomous</div>
+    </div>
+    <div class="stat">
+      <div class="number">0</div>
+      <div class="label">Technical Decisions Needed</div>
+    </div>
+  </div>
+</div>
+
+<!-- How it works -->
+<section id="how-it-works" class="pipeline">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Five phases. Fully autonomous.</h2>
+      <p class="section-desc center">From a vague brief to a tested, active workflow. No manual steps in between.</p>
+    </div>
+    <div class="pipeline-grid">
+      <div class="pipeline-step reveal">
+        <div class="step-num s1">1</div>
+        <div class="step-content">
+          <h3>Understand</h3>
+          <p>Parses your brief into structured requirements. Infers missing details instead of asking. Asks max 1-2 questions only if the answer changes the architecture.</p>
+          <span class="step-tag">No tools - pure reasoning</span>
+        </div>
+      </div>
+      <div class="pipeline-step reveal reveal-delay-1">
+        <div class="step-num s2">2</div>
+        <div class="step-content">
+          <h3>Design</h3>
+          <p>Searches 2,653+ templates for matching solutions. Selects the optimal architecture pattern. Picks the best nodes from 525+ available integrations.</p>
+          <span class="step-tag">search_templates + search_nodes</span>
+        </div>
+      </div>
+      <div class="pipeline-step reveal reveal-delay-2">
+        <div class="step-num s3">3</div>
+        <div class="step-content">
+          <h3>Build + Credentials</h3>
+          <p>Creates the workflow iteratively, node by node. Configures expressions, connections, error handling. Auto-assigns credentials from your n8n instance.</p>
+          <span class="step-tag">n8n_create_workflow + n8n_update_partial_workflow</span>
+        </div>
+      </div>
+      <div class="pipeline-step reveal reveal-delay-3">
+        <div class="step-num s4">4</div>
+        <div class="step-content">
+          <h3>Validate & Fix</h3>
+          <p>Runs validation loops. Auto-fixes errors with n8n_autofix_workflow. Repeats until the workflow is clean. Usually 2-3 cycles.</p>
+          <span class="step-tag">n8n_validate_workflow + n8n_autofix_workflow</span>
+        </div>
+      </div>
+      <div class="pipeline-step reveal reveal-delay-4">
+        <div class="step-num s5">5</div>
+        <div class="step-content">
+          <h3>Test & Deliver</h3>
+          <p>Executes with realistic test data. Checks results, fixes failures. Activates the workflow. Delivers a full report with webhook URLs, credential status, and what it does.</p>
+          <span class="step-tag">n8n_test_workflow + activateWorkflow</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Demo -->
+<section id="demo" class="demo">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">See It In Action</div>
+      <h2 class="section-title">From brief to workflow in seconds</h2>
+    </div>
+    <div class="terminal reveal">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <div class="terminal-title">Claude Code</div>
+      </div>
+      <div class="terminal-body">
+        <div class="line"><span class="prompt">you:</span> <span class="cmd">When a customer submits a feedback form, analyze sentiment with AI, save to Sheets, alert on Slack if negative</span></div>
+        <div class="line">&nbsp;</div>
+        <div class="line"><span class="comment"># Phase 1: Understanding requirements...</span></div>
+        <div class="line"><span class="info">Trigger:</span> Webhook (POST) &nbsp; <span class="info">AI:</span> Sentiment analysis &nbsp; <span class="info">Output:</span> Sheets + Slack</div>
+        <div class="line">&nbsp;</div>
+        <div class="line"><span class="comment"># Phase 2: Designing architecture...</span></div>
+        <div class="line"><span class="output">Template #1847 matches 65% - building from scratch with best nodes</span></div>
+        <div class="line">&nbsp;</div>
+        <div class="line"><span class="comment"># Phase 3: Building workflow iteratively...</span></div>
+        <div class="line"><span class="output">Created: Webhook -> Set -> OpenAI (sentiment) -> IF -> Slack + Sheets</span></div>
+        <div class="line"><span class="output">Credentials assigned: Google Sheets (Main), Slack (Prod), OpenAI (GPT-4)</span></div>
+        <div class="line">&nbsp;</div>
+        <div class="line"><span class="comment"># Phase 4-5: Validated, tested, activated</span></div>
+        <div class="line"><span class="output">Workflow #2847 is live. Webhook URL: https://n8n.example.com/webhook/feedback</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything you'd do manually,<br>done autonomously</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon orange">&#9889;</div>
+        <h3>Zero-Config Architecture</h3>
+        <p>Picks the right pattern automatically: webhook processing, API integration, database sync, AI agents, or scheduled tasks. You don't choose - it decides.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon purple">&#128273;</div>
+        <h3>Smart Credential Matching</h3>
+        <p>Lists your existing n8n credentials via API and auto-assigns them. Production-first heuristic. Asks only when truly ambiguous - one question, all creds at once.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon blue">&#128270;</div>
+        <h3>Template-Aware</h3>
+        <p>Searches 2,653+ real workflow templates before building. If a template matches 70%+, deploys it and modifies. Otherwise builds from scratch with best nodes.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon green">&#9989;</div>
+        <h3>Self-Healing Validation</h3>
+        <p>Runs validation loops automatically. Interprets errors, applies auto-fixes, re-validates. Usually clean in 2-3 cycles. Handles false positives intelligently.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-4">
+        <div class="feature-icon pink">&#128640;</div>
+        <h3>Real Testing</h3>
+        <p>Generates realistic test payloads based on your use case. Executes the workflow, checks results, debugs failures. Only activates after successful test.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-5">
+        <div class="feature-icon yellow">&#127760;</div>
+        <h3>Any Language, Any Platform</h3>
+        <p>Understands briefs in any language. Works on macOS, Linux, Windows. Supports n8n Cloud, self-hosted, and desktop. All 525+ integrations available.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Integrations scroll -->
+<section>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Integrations</div>
+      <h2 class="section-title">525+ nodes, zero configuration</h2>
+      <p class="section-desc center">Every integration n8n supports. Autopilot finds and configures the right ones.</p>
+    </div>
+  </div>
+  <div class="integrations-scroll">
+    <div class="integrations-track">
+      <span class="int-badge">Slack</span>
+      <span class="int-badge">Google Sheets</span>
+      <span class="int-badge">OpenAI</span>
+      <span class="int-badge">Gmail</span>
+      <span class="int-badge">PostgreSQL</span>
+      <span class="int-badge">HubSpot</span>
+      <span class="int-badge">Notion</span>
+      <span class="int-badge">Stripe</span>
+      <span class="int-badge">Telegram</span>
+      <span class="int-badge">Discord</span>
+      <span class="int-badge">Airtable</span>
+      <span class="int-badge">MySQL</span>
+      <span class="int-badge">Jira</span>
+      <span class="int-badge">GitHub</span>
+      <span class="int-badge">Twilio</span>
+      <span class="int-badge">Google Drive</span>
+      <span class="int-badge">MongoDB</span>
+      <span class="int-badge">Anthropic</span>
+      <span class="int-badge">Salesforce</span>
+      <span class="int-badge">Trello</span>
+      <span class="int-badge">Asana</span>
+      <span class="int-badge">AWS S3</span>
+      <span class="int-badge">Pinecone</span>
+      <span class="int-badge">HTTP Request</span>
+      <!-- Duplicate for infinite scroll -->
+      <span class="int-badge">Slack</span>
+      <span class="int-badge">Google Sheets</span>
+      <span class="int-badge">OpenAI</span>
+      <span class="int-badge">Gmail</span>
+      <span class="int-badge">PostgreSQL</span>
+      <span class="int-badge">HubSpot</span>
+      <span class="int-badge">Notion</span>
+      <span class="int-badge">Stripe</span>
+      <span class="int-badge">Telegram</span>
+      <span class="int-badge">Discord</span>
+      <span class="int-badge">Airtable</span>
+      <span class="int-badge">MySQL</span>
+      <span class="int-badge">Jira</span>
+      <span class="int-badge">GitHub</span>
+      <span class="int-badge">Twilio</span>
+      <span class="int-badge">Google Drive</span>
+      <span class="int-badge">MongoDB</span>
+      <span class="int-badge">Anthropic</span>
+      <span class="int-badge">Salesforce</span>
+      <span class="int-badge">Trello</span>
+      <span class="int-badge">Asana</span>
+      <span class="int-badge">AWS S3</span>
+      <span class="int-badge">Pinecone</span>
+      <span class="int-badge">HTTP Request</span>
+    </div>
+  </div>
+</section>
+
+<!-- Install -->
+<section id="install" class="install-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Installation</div>
+      <h2 class="section-title">Up and running in 60 seconds</h2>
+    </div>
+    <div class="reveal">
+      <div class="install-tabs">
+        <button class="install-tab active" onclick="switchTab('macos')">macOS / Linux</button>
+        <button class="install-tab" onclick="switchTab('windows')">Windows</button>
+        <button class="install-tab" onclick="switchTab('manual')">Manual</button>
+      </div>
+    </div>
+    <div class="install-content reveal">
+      <div id="tab-macos" class="install-panel active">
+        <div class="code-block">
+          <span class="comment"># One command installs everything</span><br>
+          curl -fsSL https://raw.githubusercontent.com/natiixnt/n8n-autopilot/main/install.sh | bash
+        </div>
+        <p style="color: var(--text-dim); font-size: 0.85rem; text-align: center;">Installs n8n-mcp + 7 base skills + autopilot skill. Prompts for n8n URL and API key.</p>
+      </div>
+      <div id="tab-windows" class="install-panel">
+        <div class="code-block">
+          <span class="comment"># PowerShell (run as admin)</span><br>
+          irm https://raw.githubusercontent.com/natiixnt/n8n-autopilot/main/install.ps1 | iex
+        </div>
+        <p style="color: var(--text-dim); font-size: 0.85rem; text-align: center;">Same installer, PowerShell version. Sets environment variables in user scope.</p>
+      </div>
+      <div id="tab-manual" class="install-panel">
+        <div class="code-block">
+          <span class="comment"># 1. Install n8n-mcp server</span><br>
+          npm install -g n8n-mcp<br><br>
+          <span class="comment"># 2. Install base skills</span><br>
+          git clone https://github.com/czlonkowski/n8n-skills.git /tmp/n8n-skills<br>
+          cp -r /tmp/n8n-skills/skills/* ~/.claude/skills/<br><br>
+          <span class="comment"># 3. Install autopilot</span><br>
+          git clone https://github.com/natiixnt/n8n-autopilot.git /tmp/n8n-autopilot<br>
+          cp -r /tmp/n8n-autopilot/skills/n8n-autopilot ~/.claude/skills/<br><br>
+          <span class="comment"># 4. Configure ~/.claude/.mcp.json with your n8n URL + API key</span><br>
+          <span class="comment"># 5. Restart Claude Code</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-card reveal">
+      <h2>Stop building workflows manually.</h2>
+      <p>Describe what you need. Autopilot handles the rest.</p>
+      <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+        <a href="https://github.com/natiixnt/n8n-autopilot" class="btn-primary">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Star on GitHub
+        </a>
+        <a href="#install" class="btn-secondary">Install Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="credits">
+      Built on <a href="https://github.com/czlonkowski/n8n-mcp">n8n-mcp</a> &amp; <a href="https://github.com/czlonkowski/n8n-skills">n8n-skills</a> by <a href="https://www.aiadvisors.pl/en">Romuald Czlonkowski</a>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/natiixnt/n8n-autopilot">GitHub</a>
+      <a href="https://github.com/natiixnt/n8n-autopilot/issues">Issues</a>
+      <a href="https://github.com/natiixnt/n8n-autopilot/blob/main/LICENSE">MIT License</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal, .terminal').forEach(el => observer.observe(el));
+
+  // Copy install command
+  function copyInstall(el) {
+    const code = el.querySelector('code').textContent;
+    navigator.clipboard.writeText(code);
+    const copied = el.querySelector('.copied');
+    copied.classList.add('show');
+    setTimeout(() => copied.classList.remove('show'), 2000);
+  }
+
+  // Install tabs
+  function switchTab(tab) {
+    document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.install-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+  }
+</script>
+
+</body>
+</html>

@@ -1,224 +1,227 @@
-# n8n-autopilot
+<p align="center">
+  <h1 align="center">n8n-autopilot</h1>
+  <p align="center">
+    <strong>AI-powered autonomous workflow builder for n8n</strong>
+  </p>
+  <p align="center">
+    Describe a task in plain language. Get a production-ready n8n workflow.<br>
+    Designed, built, validated, tested, and delivered - fully autonomous.
+  </p>
+  <p align="center">
+    <a href="https://natiixnt.github.io/n8n-autopilot/"><strong>Website</strong></a> &nbsp;&middot;&nbsp;
+    <a href="#quick-start"><strong>Quick Start</strong></a> &nbsp;&middot;&nbsp;
+    <a href="#how-it-works"><strong>How It Works</strong></a> &nbsp;&middot;&nbsp;
+    <a href="https://github.com/natiixnt/n8n-autopilot/issues"><strong>Issues</strong></a>
+  </p>
+  <p align="center">
+    <a href="https://github.com/natiixnt/n8n-autopilot/blob/main/LICENSE"><img src="https://img.shields.io/github/license/natiixnt/n8n-autopilot?style=flat-square&color=f97316" alt="MIT License"></a>
+    <a href="https://github.com/natiixnt/n8n-autopilot/stargazers"><img src="https://img.shields.io/github/stars/natiixnt/n8n-autopilot?style=flat-square&color=f97316" alt="Stars"></a>
+    <a href="https://github.com/natiixnt/n8n-autopilot/issues"><img src="https://img.shields.io/github/issues/natiixnt/n8n-autopilot?style=flat-square" alt="Issues"></a>
+    <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-blue?style=flat-square" alt="Platform">
+    <img src="https://img.shields.io/badge/n8n-Cloud%20%7C%20Self--Hosted%20%7C%20Desktop-green?style=flat-square" alt="n8n Support">
+  </p>
+</p>
 
-Autonomous n8n workflow builder for Claude Code. Describe what you need in plain language - Claude designs, builds, validates, tests, and delivers a working workflow.
+<br>
 
-Built on top of [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) and [n8n-skills](https://github.com/czlonkowski/n8n-skills).
+## What is n8n-autopilot?
 
-## What it does
+A [Claude Code](https://claude.ai/code) skill that turns plain-language descriptions into fully working n8n workflows. No manual node dragging, no configuration, no debugging.
 
-You describe a task:
+**You say:**
+> "When a customer submits a feedback form, analyze sentiment with AI, save everything to Google Sheets, and alert the team on Slack if the feedback is negative"
 
-> "When someone fills out a contact form, save the data to Google Sheets, qualify the lead with AI, and send a Slack notification"
+**Autopilot does:**
+1. Parses your requirements (trigger, processing, output, error handling)
+2. Searches 2,653+ workflow templates for matching solutions
+3. Picks optimal nodes from 525+ available integrations
+4. Builds the workflow iteratively in your n8n instance
+5. Auto-assigns credentials from your stored n8n credentials
+6. Validates, auto-fixes errors, re-validates until clean
+7. Tests with realistic data, checks execution results
+8. Activates and delivers a report with webhook URLs + status
 
-Claude autonomously:
+**Zero technical decisions on your part.**
 
-1. **Understands** - parses your brief into requirements (trigger, processing, output)
-2. **Designs** - searches 2,653+ templates and 525+ nodes, picks the best architecture
-3. **Builds** - creates the workflow iteratively, node by node
-4. **Assigns credentials** - finds matching credentials from your n8n instance automatically
-5. **Validates** - runs validation loops, auto-fixes errors
-6. **Tests** - executes the workflow with realistic test data
-7. **Delivers** - active workflow + report with everything you need to know
+<br>
 
-Zero technical decisions on your part. Works with any n8n integration.
-
-## Requirements
-
-- [Node.js](https://nodejs.org/) 18+
-- [Claude Code](https://claude.ai/code) (CLI, desktop app, or VS Code extension)
-- An n8n instance ([Cloud](https://n8n.io/cloud/), self-hosted, or desktop) with API access
-
-## Installation
+## Quick Start
 
 ### macOS / Linux
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/natiixnt/n8n-autopilot/main/install.sh | bash
 ```
 
-Or clone and run:
-```bash
-git clone https://github.com/natiixnt/n8n-autopilot.git
-cd n8n-autopilot
-./install.sh
-```
-
 ### Windows (PowerShell)
-
 ```powershell
 irm https://raw.githubusercontent.com/natiixnt/n8n-autopilot/main/install.ps1 | iex
 ```
 
-Or clone and run:
-```powershell
-git clone https://github.com/natiixnt/n8n-autopilot.git
-cd n8n-autopilot
-.\install.ps1
-```
+### What the installer does
+1. Installs [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) server (`npm install -g n8n-mcp`)
+2. Installs 7 base [n8n-skills](https://github.com/czlonkowski/n8n-skills)
+3. Installs the autopilot skill
+4. Configures MCP connection to your n8n instance
+5. Done - restart Claude Code and start describing workflows
 
-### Manual installation
+**Requirements:** Node.js 18+, Claude Code, n8n instance with API access
 
-1. Install n8n-mcp:
-```bash
-npm install -g n8n-mcp
-```
+<br>
 
-2. Install base n8n-skills:
-```bash
-git clone https://github.com/czlonkowski/n8n-skills.git /tmp/n8n-skills
-mkdir -p ~/.claude/skills
-cp -r /tmp/n8n-skills/skills/* ~/.claude/skills/
-```
+## How It Works
 
-3. Install n8n-autopilot:
-```bash
-git clone https://github.com/natiixnt/n8n-autopilot.git /tmp/n8n-autopilot
-cp -r /tmp/n8n-autopilot/skills/n8n-autopilot ~/.claude/skills/
-```
-
-4. Configure MCP - create `~/.claude/.mcp.json`:
-```json
-{
-  "mcpServers": {
-    "n8n-mcp": {
-      "command": "npx",
-      "args": ["n8n-mcp"],
-      "env": {
-        "MCP_MODE": "stdio",
-        "LOG_LEVEL": "error",
-        "DISABLE_CONSOLE_OUTPUT": "true",
-        "N8N_API_URL": "https://your-instance.app.n8n.cloud",
-        "N8N_API_KEY": "your-api-key"
-      }
-    }
-  }
-}
-```
-
-5. Restart Claude Code.
-
-## Usage
-
-Just describe what you need. Works in any language.
+### 5-Phase Autonomous Pipeline
 
 ```
-Build a workflow: when someone submits a form, save to Google Sheets and notify on Slack
-```
-
-```
-Monitor our services every 5 minutes and alert on Slack when something goes down
-```
-
-```
-Weekly sales report from our API, summarized by AI, emailed to the team
-```
-
-```
-Auto-respond to customer emails using AI with access to our knowledge base
-```
-
-```
-Klient chce: zbieraj leady z formularza i kwalifikuj je z AI
-```
-
-Claude takes it from there. No technical decisions needed.
-
-## How it works
-
-### 5-phase autonomous pipeline
-
-```
+Brief: "Monitor our APIs every 5 minutes, alert on Slack when something goes down"
+  |
+  v
 Phase 1: UNDERSTAND
-  Parse brief -> extract: trigger, sources, processing, output
-  Infer missing details (don't ask unless truly ambiguous)
-
+  Trigger: Schedule (every 5 min)
+  Processing: HTTP health checks, status comparison
+  Output: Slack alert on state change
+  |
+  v
 Phase 2: DESIGN
-  Search templates (2,653+) -> find matching patterns
-  Select architecture (webhook / API / database / AI / scheduled)
-  Pick best nodes (525+ available)
-
-Phase 3: BUILD
-  Create workflow iteratively (node by node)
-  Configure expressions, connections, error handling
-
-Phase 3.5: CREDENTIALS
-  List credentials from your n8n instance via API
-  Auto-match by type (slackApi, openAiApi, etc.)
-  Smart resolution when multiple exist (production-first, context-aware)
-
+  Pattern: Scheduled Task
+  Nodes: Schedule -> Code -> HTTP Request -> IF -> Slack
+  Template match: 45% - building from scratch
+  |
+  v
+Phase 3: BUILD + CREDENTIALS
+  n8n_create_workflow -> iterative n8n_update_partial_workflow
+  Auto-assign: Slack (Prod), HTTP credentials
+  |
+  v
 Phase 4: VALIDATE & FIX
-  Run validation -> auto-fix errors -> re-validate
-  Usually 2-3 cycles until clean
-
+  n8n_validate_workflow -> n8n_autofix_workflow -> re-validate
+  2 cycles -> clean
+  |
+  v
 Phase 5: TEST & DELIVER
-  Execute with realistic test data
-  Check results, fix if needed
-  Activate + deliver report
+  n8n_test_workflow -> check n8n_executions -> activate
+  "Workflow #3291 is live"
 ```
 
-### Credential auto-assignment
+### Smart Credential Auto-Assignment
 
-When your n8n instance has stored credentials, autopilot matches them automatically:
+Autopilot reads your existing n8n credentials via API and matches them automatically:
 
-| Situation | What happens |
-|-----------|-------------|
-| 1 credential of needed type | Assigned automatically |
-| Multiple, one named "prod"/"main" | Production one picked automatically |
-| Multiple, brief says "test workflow" | Test/dev one picked automatically |
+| Scenario | Behavior |
+|----------|----------|
+| One credential of needed type | Assigned automatically |
+| Multiple, one named "prod"/"main"/"live" | Production one picked |
+| Multiple, brief says "test workflow" | Dev/test one picked |
 | Multiple, truly ambiguous | One bundled question for all |
-| None found | Reported as "configure manually in n8n UI" |
+| None found | Reported in delivery - "configure in n8n UI" |
 
-### Decision-making
+### Autonomous Decision-Making
 
-Autopilot makes technical decisions for you:
+You don't pick the architecture. Autopilot decides:
 
-| Your words | Claude decides |
-|-----------|---------------|
-| "when someone fills a form" | Webhook trigger, POST |
-| "every morning" | Schedule trigger, cron 8:00 |
-| "classify", "sentiment" | AI node (OpenAI/Anthropic) |
-| "if amount > 1000" | IF node (rule-based) |
-| "save the data" | Google Sheets (simple) or Postgres (structured) |
-| "notify the team" | Slack (real-time) or Email (async) |
+| Your words | Autopilot decides |
+|-----------|-------------------|
+| "when someone fills a form" | Webhook trigger, POST method |
+| "every morning at 9" | Schedule trigger, cron |
+| "classify", "analyze sentiment" | AI node (OpenAI/Anthropic) |
+| "if amount > 1000" | IF node, rule-based |
+| "save the data" | Google Sheets or Postgres |
+| "notify the team" | Slack or Email |
+| "summarize", "generate" | AI text generation |
+| doesn't mention error handling | Adds it anyway (retry + alert) |
 
-## Works with
+<br>
 
-**n8n deployments:**
-- n8n Cloud
-- Self-hosted (Docker, bare metal)
-- n8n Desktop
+## Supported Platforms
 
-**Operating systems:**
-- macOS
-- Linux (Ubuntu, Debian, CentOS, etc.)
+**Operating Systems:**
+- macOS (Intel + Apple Silicon)
+- Linux (Ubuntu, Debian, CentOS, Fedora, Arch)
 - Windows 10/11
 
-**All 525+ n8n integrations**, including:
-Slack, Google Sheets, Gmail, OpenAI, Postgres, MySQL, HubSpot, Notion, Airtable, Telegram, Discord, Stripe, Twilio, Jira, GitHub, HTTP Request, and everything else n8n supports.
+**n8n Deployments:**
+- n8n Cloud
+- Self-hosted (Docker, bare metal, Kubernetes)
+- n8n Desktop
 
-## Project structure
+**Claude Code Environments:**
+- CLI
+- VS Code extension
+- Desktop app
+- Web (claude.ai)
+
+<br>
+
+## 525+ Integrations
+
+Every integration n8n supports works with autopilot. Some popular ones:
+
+**Communication:** Slack, Gmail, Telegram, Discord, Twilio, Microsoft Teams, WhatsApp
+**Data:** Google Sheets, Airtable, Notion, PostgreSQL, MySQL, MongoDB, Redis, Supabase
+**AI/ML:** OpenAI, Anthropic, Google AI, Pinecone, Qdrant, Hugging Face
+**CRM:** HubSpot, Salesforce, Pipedrive, Zoho
+**Project Management:** Jira, Asana, Trello, Linear, ClickUp, Monday.com
+**E-commerce:** Stripe, Shopify, WooCommerce, PayPal
+**DevOps:** GitHub, GitLab, AWS, Google Cloud, Docker, Kubernetes
+**Storage:** Google Drive, Dropbox, AWS S3, OneDrive
+**And 450+ more** - if n8n has a node for it, autopilot can use it.
+
+<br>
+
+## Use Cases
+
+```
+"Collect leads from our landing page form, qualify them with AI, push hot leads to HubSpot, notify sales on Slack"
+
+"Generate a weekly sales report from our API, summarize with AI, email to the team every Monday"
+
+"When a customer sends a support email, draft an AI response, create a Jira ticket, notify the team"
+
+"Sync contacts between Google Sheets and HubSpot every 15 minutes"
+
+"Monitor competitor websites for changes, summarize what changed, send a daily Slack digest"
+
+"Process uploaded CSV files: validate data, import to Postgres, send confirmation email"
+
+"Auto-respond to Slack messages in #support channel using AI with access to our docs"
+```
+
+Works in any language - English, Polish, German, Spanish, etc.
+
+<br>
+
+## Project Structure
 
 ```
 n8n-autopilot/
-  skills/
-    n8n-autopilot/
-      SKILL.md              # Main skill - 5-phase autonomous pipeline
-      SOLUTION_DESIGN.md    # Decision trees, scenario->architecture mappings
-      EXAMPLES.md           # Real briefs -> solutions (6 examples)
-  install.sh                # macOS/Linux installer
-  install.ps1               # Windows installer
+  skills/n8n-autopilot/
+    SKILL.md              # Core skill - 5-phase autonomous pipeline
+    SOLUTION_DESIGN.md    # Decision trees, 8 scenario-to-architecture mappings
+    EXAMPLES.md           # 6 real-world briefs with full solutions
+  docs/
+    index.html            # Landing page (GitHub Pages)
+  install.sh              # macOS/Linux installer
+  install.ps1             # Windows installer
   .claude-plugin/
-    plugin.json             # Claude Code plugin metadata
-  README.md
-  LICENSE
+    plugin.json           # Claude Code plugin metadata
 ```
 
-## Credits
+<br>
 
-- [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) - MCP server by Romuald Czlonkowski
-- [n8n-skills](https://github.com/czlonkowski/n8n-skills) - Base skills by Romuald Czlonkowski
-- n8n-autopilot - Autonomous orchestration layer
+## Built On
+
+- **[n8n-mcp](https://github.com/czlonkowski/n8n-mcp)** - MCP server providing n8n API tools (create, validate, test, execute workflows)
+- **[n8n-skills](https://github.com/czlonkowski/n8n-skills)** - 7 expert skills teaching Claude how to use n8n-mcp effectively
+- **n8n-autopilot** - Autonomous orchestration layer that ties everything together
+
+Created by Romuald Czlonkowski ([n8n-mcp](https://github.com/czlonkowski/n8n-mcp), [n8n-skills](https://github.com/czlonkowski/n8n-skills)) and extended with autopilot by [natiixnt](https://github.com/natiixnt).
+
+<br>
+
+## Contributing
+
+Issues and PRs welcome. If you have a use case that doesn't work well, [open an issue](https://github.com/natiixnt/n8n-autopilot/issues) with your brief and what went wrong.
 
 ## License
 
-MIT
+[MIT](LICENSE)
